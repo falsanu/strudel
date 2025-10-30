@@ -1,0 +1,117 @@
+/* @title    Pacelbel Fun
+   @by       gfxAudio
+*/
+
+setCps(160/60/4)
+
+
+// Drums.v1
+//const bassdrum = s("bd ~ bd ~").bank("RolandTr505");
+//const hihat = s("hh*4");
+//const kicks = s("~ ~ ~ cp*2");
+//const clap = s("~ ~ ~ cp").clip(4);
+
+// Drums.v2
+const bassdrum = s("bd bd bd bd")
+  .room(1)
+  .bank("rm50")
+  //.ply("<1 2 4 8>")
+  .euclid(3,8)
+  .gain(2);
+const hihat = s("hh*4");
+const kicks = s("~ ~ ~ cp ~ ~ ~ ~")
+  .bank("rm50")
+  .gain(2);
+const clap = s("~ ~ ~ ~")
+  .clip(2);
+
+const drumset = 
+  stack(
+    bassdrum, 
+    hihat, 
+    kicks, 
+    clap
+  );
+
+const transpose = note("C1*16").transpose(irand(36)).scale('Cb2 major').scaleTranspose(3)
+
+// Melody
+const melody2 = n("0 2 4 6").scale("<A:minor A:major>")
+const melody = 
+  note(`<
+       [D4, F#, A]
+       [A, C#, E]
+       [B, D, F#]
+       [F#, A, C#]
+       [G, B, D]
+       [D, F#, A]
+       [G, B, D]
+       [A, C#, E]     
+  >`)
+  
+  //.fast("<4 8>")
+  .fast(2)
+  //.slow(1)
+  .room(1)
+  .sustain("<1 [4 2]>")
+  //.gain("[0.25 .3]")
+  // ._punchcard();
+
+ const melodyInNumbers = n(`<
+       [14, 6, 9]
+       [9, 1, 4]
+       [11, 2, 6]
+       [6, 9, 1]
+       [7, 11, 2]
+       [2, 6, 9]
+       [7, 11, 2]
+       [9, 1, 4]     
+  >`.add(slider(7,1,12,1)))
+   .scale("C:major")
+   .piano()
+   ._punchcard()
+   .fast(2).decay(100)
+
+const randomNotes = 
+  chooseCycles("D", "E", "F#", "G", "A", "B", "C#", "D")
+  .note()
+  .s("gm_electric_bass_pick")
+  .fast("<8 4>")
+  .gain(slider(3,1,12,1))
+  .lpf(slider(300, 300, 10000))
+
+const randomNotesGuitar = 
+  chooseCycles("D", "G", "A", "C#", "D")
+  .note()
+  .s("gm_overdriven_guitar")
+  .fast("<8 4>")
+  .gain(slider(3,1,12,1))
+
+const surfGuitar = 
+  note("<D G*4 A D*2>")
+  .s("gm_overdriven_guitar")
+  //.fast("<8 4>")
+  .gain(slider(3,1,12,1))
+
+const piano =
+  note("<D A*4 [F G*2] D>")
+  .s("gm_epiano1")
+  //.delay(2)
+  .clip(2)
+
+// Kombiniere Drums und Melodie
+stack(
+  bassdrum.gain(slider(2,0, 2, 0.1)),
+  hihat.gain(slider(2,0, 2, 0.1)),
+  kicks.gain(slider(2,0, 2, 0.1)),
+  clap.gain(slider(1.1,0, 2, 0.1)),
+  surfGuitar.gain(slider(0.9,0, 2, 0.1)),
+  drumset.gain(slider(0,0, 2, 0.1)),
+  melody.gain(slider(0.8,0, 2, 0.1)),
+  piano.gain(slider(0,0, 2, 0.1)),
+  randomNotes.gain(slider(0,0, 2, 0.1)),
+  randomNotesGuitar.gain(slider(0,0, 2, 0.1)),
+  melody2.gain(slider(0,0, 2, 0.1)),
+  melodyInNumbers.gain(slider(0,0, 2, 0.1)),
+  
+).orbit(slider(2, 1, 2));
